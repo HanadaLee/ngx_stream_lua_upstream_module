@@ -68,7 +68,7 @@ ngx_module_t ngx_http_lua_upstream_module = {
 static ngx_int_t
 ngx_http_lua_upstream_init(ngx_conf_t *cf)
 {
-    if (ngx_http_lua_add_package_preload(cf, "ngx.upstream",
+    if (ngx_http_lua_add_package_preload(cf, "ngx.http.upstream",
                                          ngx_http_lua_upstream_create_module)
         != NGX_OK)
     {

@@ -1,3 +1,7 @@
+> This version of lua-stream-upstream-nginx-module is modified to support **stream** part of upstreams!
+
+> For http part please go to original module [HERE](https://github.com/openresty/lua-upstream-nginx-module)
+
 Name
 ====
 
@@ -334,4 +338,3 @@ See Also
 * the [lua-resty-upstream-healthcheck](https://github.com/openresty/lua-resty-upstream-healthcheck) library which makes use of the Lua API provided by this module.
 
 [Back to TOC](#table-of-contents)
-

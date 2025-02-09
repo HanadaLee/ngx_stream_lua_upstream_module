@@ -10,7 +10,7 @@ home=~
 force=$2
 
 disable_pcre2="";
-answer=`$root/../openresty/util/ver-ge "$version" 1.23.0`
+answer=`/usr/local/openresty-devel-utils/ngx-ver-ge "$version" 1.23.0`
 if [ "$answer" = "Y" ]; then
     disable_pcre2=--without-pcre2;
 fi
@@ -46,4 +46,3 @@ ngx-build $force $version \
           #--with-cc-opt="-g3 -O0"
           #--add-module=$root/../echo-nginx-module \
   #--without-http_ssi_module  # we cannot disable ssi because echo_location_async depends on it (i dunno why?!)
-
