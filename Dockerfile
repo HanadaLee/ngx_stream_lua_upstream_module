@@ -68,6 +68,8 @@ RUN cd /usr/local/src && \
 
 WORKDIR ${OPENRESTY_SRC_ROOT}
 
+COPY . ${MODULE_SRC_ROOT}
+
 RUN ./configure --with-pcre="/usr/local/src/pcre-${PCRE_VERSION}" \
                 --with-openssl="/usr/local/src/openssl-${OPENSSL_VERSION}" \
                 --with-zlib="/usr/local/src/zlib-${ZLIB_VERSION}" \
