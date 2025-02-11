@@ -7,8 +7,8 @@ ARG OPENRESTY_VERSION
 
 RUN curl -s https://openresty.org/package/rhel/openresty2.repo -o /etc/yum.repos.d/openresty.repo && \
     rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
-    microdnf install -y glibc supervisor make gcc cpp git unzip && \
-    microdnf install --enablerepo=openresty -y openresty-${OPENRESTY_VERSION} \
+    microdnf install -y glibc supervisor make gcc cpp git unzip ccache && \
+    microdnf install --enablerepo=openresty -y openresty-${OPENRESTY_VERSION} openresty-openssl111 openresty-openssl111-devel openresty-zlib openresty-pcre openresty-openssl111-devel openresty-zlib-devel openresty-pcre-devel \
     openresty-opm-${OPENRESTY_VERSION} \
     openresty-pcre \
     openresty-pcre-devel \
@@ -68,19 +68,21 @@ RUN cd /usr/local/src && \
 
 WORKDIR ${OPENRESTY_SRC_ROOT}
 
-COPY . ${MODULE_SRC_ROOT}
 
-RUN ./configure --with-pcre="/usr/local/src/pcre-${PCRE_VERSION}" \
-                --with-openssl="/usr/local/src/openssl-${OPENSSL_VERSION}" \
-                --with-zlib="/usr/local/src/zlib-${ZLIB_VERSION}" \
-                --without-mail_pop3_module \
-                --without-mail_imap_module \
-                --without-mail_smtp_module \
-                --without-http_upstream_ip_hash_module \
-                --without-http_empty_gif_module \
-                --without-http_referer_module \
-                --without-http_autoindex_module \
-                --without-http_auth_basic_module \
-                --without-http_userid_module \
-                --add-dynamic-module=${MODULE_SRC_ROOT} && \
-                make
+# COPY . ${MODULE_SRC_ROOT}
+
+# RUN ./configure --with-compat \
+#                 --with-pcre="/usr/local/src/pcre-${PCRE_VERSION}" \
+#                 --with-openssl="/usr/local/src/openssl-${OPENSSL_VERSION}" \
+#                 --with-zlib="/usr/local/src/zlib-${ZLIB_VERSION}" \
+#                 --without-mail_pop3_module \
+#                 --without-mail_imap_module \
+#                 --without-mail_smtp_module \
+#                 --without-http_upstream_ip_hash_module \
+#                 --without-http_empty_gif_module \
+#                 --without-http_referer_module \
+#                 --without-http_autoindex_module \
+#                 --without-http_auth_basic_module \
+#                 --without-http_userid_module \
+#                 --add-dynamic-module=${MODULE_SRC_ROOT} && \
+                # make

@@ -58,7 +58,7 @@ ngx_module_t ngx_stream_lua_upstream_module = {
 static ngx_int_t
 ngx_stream_lua_upstream_init(ngx_conf_t *cf)
 {
-    if (ngx_stream_lua_add_package_preload(cf, "ngx.stream.upstream",
+    if (ngx_stream_lua_add_package_preload(cf, "ngx.upstream",
                                            ngx_stream_lua_upstream_create_module) != NGX_OK)
     {
         return NGX_ERROR;
