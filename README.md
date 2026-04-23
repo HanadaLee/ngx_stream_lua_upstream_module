@@ -1,31 +1,33 @@
-> This version of lua-stream-upstream-nginx-module is modified to support **stream** part of upstreams!
 
-> For http part please go to original module [HERE](https://github.com/openresty/lua-upstream-nginx-module)
 
 Name
 ====
 
-ngx_http_lua_upstream - Nginx C module to expose Lua API to ngx_lua for Nginx upstreams
+ngx_stream_lua_upstream - Nginx C module to expose Lua API to ngx_lua for Nginx upstreams
+
+> This version of lua-stream-upstream-nginx-module is modified to support **stream** part of upstreams!
+> For http part please go to original module [HERE](https://github.com/openresty/lua-upstream-nginx-module)
 
 Table of Contents
 =================
 
-* [Name](#name)
-* [Status](#status)
-* [Synopsis](#synopsis)
-* [Functions](#functions)
-    * [get_upstreams](#get_upstreams)
-    * [get_servers](#get_servers)
-    * [get_primary_peers](#get_primary_peers)
-    * [get_backup_peers](#get_backup_peers)
-    * [set_peer_down](#set_peer_down)
-    * [current_upstream_name](#current_upstream_name)
-* [TODO](#todo)
-* [Compatibility](#compatibility)
-* [Installation](#installation)
-* [Author](#author)
-* [Copyright and License](#copyright-and-license)
-* [See Also](#see-also)
+- [Name](#name)
+- [Table of Contents](#table-of-contents)
+- [Status](#status)
+- [Synopsis](#synopsis)
+- [Functions](#functions)
+  - [get\_upstreams](#get_upstreams)
+  - [get\_servers](#get_servers)
+  - [get\_primary\_peers](#get_primary_peers)
+  - [get\_backup\_peers](#get_backup_peers)
+  - [set\_peer\_down](#set_peer_down)
+  - [current\_upstream\_name](#current_upstream_name)
+- [TODO](#todo)
+- [Compatibility](#compatibility)
+- [Installation](#installation)
+- [Author](#author)
+- [Copyright and License](#copyright-and-license)
+- [See Also](#see-also)
 
 Status
 ======
@@ -36,7 +38,7 @@ Synopsis
 ========
 
 ```nginx
-http {
+stream {
     upstream foo.com {
         server 127.0.0.1 fail_timeout=53 weight=4 max_fails=100;
         server agentzh.org:81;
@@ -47,7 +49,7 @@ http {
     }
 
     server {
-        listen 8080;
+        listen 12345;
 
         # sample output for the following /upstream interface:
         # upstream foo.com:
@@ -56,41 +58,38 @@ http {
         # upstream bar:
         #     addr = 127.0.0.2:80, weight = 1, fail_timeout = 10, max_fails = 1
 
-        location = /upstreams {
-            default_type text/plain;
-            content_by_lua_block {
-                local concat = table.concat
-                local upstream = require "ngx.upstream"
-                local get_servers = upstream.get_servers
-                local get_upstreams = upstream.get_upstreams
+        content_by_lua_block {
+            local concat = table.concat
+            local upstream = require "ngx.upstream"
+            local get_servers = upstream.get_servers
+            local get_upstreams = upstream.get_upstreams
 
-                local us = get_upstreams()
-                for _, u in ipairs(us) do
-                    ngx.say("upstream ", u, ":")
-                    local srvs, err = get_servers(u)
-                    if not srvs then
-                        ngx.say("failed to get servers in upstream ", u)
-                    else
-                        for _, srv in ipairs(srvs) do
-                            local first = true
-                            for k, v in pairs(srv) do
-                                if first then
-                                    first = false
-                                    ngx.print("    ")
-                                else
-                                    ngx.print(", ")
-                                end
-                                if type(v) == "table" then
-                                    ngx.print(k, " = {", concat(v, ", "), "}")
-                                else
-                                    ngx.print(k, " = ", v)
-                                end
+            local us = get_upstreams()
+            for _, u in ipairs(us) do
+                ngx.say("upstream ", u, ":")
+                local srvs, err = get_servers(u)
+                if not srvs then
+                    ngx.say("failed to get servers in upstream ", u)
+                else
+                    for _, srv in ipairs(srvs) do
+                        local first = true
+                        for k, v in pairs(srv) do
+                            if first then
+                                first = false
+                                ngx.print("    ")
+                            else
+                                ngx.print(", ")
                             end
-                            ngx.print("\n")
+                            if type(v) == "table" then
+                                ngx.print(k, " = {", concat(v, ", "), "}")
+                            else
+                                ngx.print(k, " = ", v)
+                            end
                         end
+                        ngx.print("\n")
                     end
                 end
-            }
+            end
         }
     }
 }
@@ -107,7 +106,7 @@ get_upstreams
 
 Get a list of the names for all the named upstream groups (i.e., explicit `upstream {}` blocks).
 
-Note that implicit upstream groups created by `proxy_pass` and etc are excluded.
+Note that implicit upstream groups created by `proxy_pass` and etc are included.
 
 [Back to TOC](#table-of-contents)
 
@@ -127,6 +126,7 @@ The return value is an array-like Lua table. Each table entry is a hash-like Lua
 * max_fails
 * name
 * weight
+* down
 
 [Back to TOC](#table-of-contents)
 
@@ -268,12 +268,11 @@ The following versions of Nginx should work with this module:
 Installation
 ============
 
-This module is bundled and enabled by default in the [OpenResty](http://openresty.org) bundle. And you are recommended to use OpenResty.
-
 1. Grab the nginx source code from [nginx.org](http://nginx.org/), for example,
 the version 1.11.2 (see [nginx compatibility](#compatibility)),
-2. then grab the source code of the [ngx_lua](https://github.com/openresty/lua-nginx-module#installation) as well as its dependencies like [LuaJIT](http://luajit.org/download.html).
-3. and finally build the source with this module:
+2. then grab the source code of the [ngx_stream_lua](https://github.com/openresty/stream-lua-nginx-module#installation) as well as its dependencies like [LuaJIT](http://luajit.org/download.html).
+3. download a patch for ngx_stream_lua: https://git.hanada.info/hanada/openresty/-/tree/main/patches, path filename is `ngx_stream_lua_module_xxxxx-expose_request_struct.patch`. because original ngx_stream_lua does not expose request struct. `patch -p1 < ngx_stream_lua_module_xxxxx-expose_request_struct.patch`
+4. and finally build the source with this module:
 
 ```bash
 wget 'http://nginx.org/download/nginx-1.11.2.tar.gz'
@@ -289,8 +288,8 @@ export LUAJIT_INC=/opt/luajit/include/luajit-2.1
 # Here we assume you would install you nginx under /opt/nginx/.
 ./configure --prefix=/opt/nginx \
     --with-ld-opt="-Wl,-rpath,$LUAJIT_LIB" \
-    --add-module=/path/to/lua-nginx-module \
-    --add-module=/path/to/lua-upstream-nginx-module
+    --add-module=/path/to/stream-lua-nginx-module \
+    --add-module=/path/to/ngx_stream_lua_upstream_module
 
 make -j2
 make install
@@ -301,7 +300,7 @@ Starting from NGINX 1.9.11, you can also compile this module as a dynamic module
 directive, for example,
 
 ```nginx
-load_module /path/to/modules/ngx_http_lua_upstream_module.so;
+load_module /path/to/modules/ngx_stream_lua_upstream_module.so;
 ```
 
 [Back to TOC](#table-of-contents)
