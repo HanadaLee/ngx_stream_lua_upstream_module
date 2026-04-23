@@ -594,7 +594,6 @@ ngx_stream_lua_upstream_current_upstream_name(lua_State *L)
 {
     ngx_stream_lua_request_t       *r;
     ngx_stream_upstream_t          *us;
-    ngx_stream_upstream_conf_t     *ucf;
     ngx_stream_upstream_srv_conf_t *uscf;
 
     r = ngx_stream_lua_get_request(L);
@@ -608,12 +607,7 @@ ngx_stream_lua_upstream_current_upstream_name(lua_State *L)
         return 1;
     }
 
-    ucf = us->conf;
-    if (ucf == NULL) {
-        return luaL_error(L, "no conf for upstream");
-    }
-
-    uscf = ucf->upstream;
+    uscf = us->upstream;
     if (uscf == NULL) {
         return luaL_error(L, "no srv conf for upstream");
     }
