@@ -33,8 +33,8 @@ static ngx_stream_upstream_srv_conf_t *
 static ngx_stream_upstream_rr_peers_t *
     ngx_stream_lua_upstream_get_peers(lua_State *L);
 static ngx_stream_upstream_rr_peer_t *
-    ngx_http_lua_upstream_find_peer_by_id(lua_State *L,
-    ngx_http_upstream_rr_peers_t *peers, int id);
+    ngx_stream_lua_upstream_find_peer_by_id(lua_State *L,
+    ngx_stream_upstream_rr_peers_t *peers, int id);
 static int ngx_stream_lua_upstream_set_peer_down(lua_State *L);
 static int ngx_stream_lua_upstream_current_upstream_name(lua_State *L);
 
@@ -250,7 +250,7 @@ static int
 ngx_stream_lua_upstream_get_primary_peers(lua_State *L)
 {
     ngx_uint_t                            i;
-    ngx_http_upstream_rr_peer_t          *peer;
+    ngx_stream_upstream_rr_peer_t        *peer;
     ngx_stream_upstream_rr_peers_t       *peers;
 
     if (lua_gettop(L) != 1) {
@@ -416,7 +416,7 @@ ngx_stream_lua_upstream_find_peer_by_id(lua_State *L,
     ngx_stream_upstream_rr_peers_t *peers, int id)
 {
     ngx_uint_t                            i;
-    ngx_stream_upstream_rr_peer_t          *peer;
+    ngx_stream_upstream_rr_peer_t        *peer;
 
     i = 0;
 
