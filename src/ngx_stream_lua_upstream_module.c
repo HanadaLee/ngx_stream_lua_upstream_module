@@ -283,9 +283,9 @@ ngx_stream_lua_upstream_get_primary_peers(lua_State *L)
 static int
 ngx_stream_lua_upstream_get_backup_peers(lua_State *L)
 {
-    ngx_uint_t                            i;
-    ngx_stream_upstream_rr_peer_t          *peer;
-    ngx_stream_upstream_rr_peers_t         *peers;
+    ngx_uint_t                           i;
+    ngx_stream_upstream_rr_peer_t       *peer;
+    ngx_stream_upstream_rr_peers_t      *peers;
 
     if (lua_gettop(L) != 1) {
         return luaL_error(L, "exactly one argument expected");
@@ -321,11 +321,11 @@ ngx_stream_lua_upstream_get_backup_peers(lua_State *L)
 
 
 static int
-ngx_stream_lua_upstream_set_peer_down(lua_State * L)
+ngx_stream_lua_upstream_set_peer_down(lua_State *L)
 {
-    int                                   id;
-    ngx_stream_upstream_rr_peer_t          *peer;
-    ngx_stream_upstream_rr_peers_t         *peers;
+    int                                  id;
+    ngx_stream_upstream_rr_peer_t       *peer;
+    ngx_stream_upstream_rr_peers_t      *peers;
 
     if (lua_gettop(L) != 4) {
         return luaL_error(L, "exactly 4 arguments expected");
@@ -338,7 +338,7 @@ ngx_stream_lua_upstream_set_peer_down(lua_State * L)
 
     id = luaL_checkint(L, 3);
 
-    // maybe it should be a peers_rlock with peer_lock?
+    /* This may need peers_rlock with peer_lock. */
     ngx_stream_upstream_rr_peers_wlock(peers);
 
     peer = ngx_stream_lua_upstream_find_peer_by_id(L, peers, id);
@@ -588,6 +588,7 @@ ngx_stream_lua_upstream_find_upstream(lua_State *L, ngx_str_t *host)
 
     return NULL;
 }
+
 
 static int
 ngx_stream_lua_upstream_current_upstream_name(lua_State *L)
