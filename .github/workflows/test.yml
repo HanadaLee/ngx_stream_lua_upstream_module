@@ -87,6 +87,16 @@ jobs:
           path: .ci/test-nginx
           persist-credentials: false
 
+      - name: Check out the Stream Lua API patch
+        uses: actions/checkout@v6
+        with:
+          repository: HanadaLee/openresty
+          ref: main
+          path: .ci/openresty
+          sparse-checkout: patches/ngx_stream_lua_module-expose_request_struct_0.0.18RC2+.patch
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+
       - name: Install build and test dependencies
         run: |
           sudo apt-get update

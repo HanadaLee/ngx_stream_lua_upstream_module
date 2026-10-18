@@ -23,12 +23,15 @@ configure_args=(
 )
 
 dependency_prefix="$module_root/.ci/deps"
-make -C "$module_root/.ci/luajit2" -j"$build_jobs"
+make -C "$module_root/.ci/luajit2" -j"$build_jobs" PREFIX="$dependency_prefix"
 make -C "$module_root/.ci/luajit2" install PREFIX="$dependency_prefix"
 export LUAJIT_INC="$dependency_prefix/include/luajit-2.1"
 export LUAJIT_LIB="$dependency_prefix/lib"
 export NGX_LUA_LOC="$module_root/.ci/lua-nginx-module"
 export NGX_STREAM_LUA_LOC="$module_root/.ci/stream-lua-nginx-module"
+# The Stream API used by this module is provided by the OpenResty patch.
+patch -d "$NGX_STREAM_LUA_LOC" -p1 --forward \
+    < "$module_root/.ci/openresty/patches/ngx_stream_lua_module-expose_request_struct_0.0.18RC2+.patch"
 export TEST_NGINX_RESTY_LUALIB="$dependency_prefix/share/lua/5.1"
 mkdir -p "$TEST_NGINX_RESTY_LUALIB"
 cp -R "$module_root/.ci/lua-resty-core/lib/." "$TEST_NGINX_RESTY_LUALIB/"
