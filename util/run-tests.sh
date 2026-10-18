@@ -44,6 +44,7 @@ configure_args+=("--with-ld-opt=-Wl,-rpath,$LUAJIT_LIB")
 configure_args+=(--add-module="$module_root/.ci/lua-nginx-module")
 configure_args+=(--add-module="$module_root/.ci/stream-lua-nginx-module")
 configure_args+=(--add-module="$module_root/.ci/lua-upstream-nginx-module")
+configure_args+=(--add-module="$module_root/.ci/echo-nginx-module")
 configure_args+=(--add-module="$module_root")
 
 cd "$nginx_source"

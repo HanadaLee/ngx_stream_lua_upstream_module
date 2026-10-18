@@ -80,6 +80,13 @@ jobs:
           path: .ci/lua-upstream-nginx-module
           persist-credentials: false
 
+      - name: Check out echo-nginx-module
+        uses: actions/checkout@v6
+        with:
+          repository: openresty/echo-nginx-module
+          path: .ci/echo-nginx-module
+          persist-credentials: false
+
       - name: Check out test-nginx
         uses: actions/checkout@v6
         with:
