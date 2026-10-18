@@ -41,7 +41,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           repository: openresty/luajit2
-          ref: v2.1
+          ref: v2.1-agentzh
           path: .ci/luajit2
           persist-credentials: false
 
